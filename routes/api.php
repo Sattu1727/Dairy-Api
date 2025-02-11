@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\PriceController;
-
 use App\Http\Controllers\StockController;
 
 // User authentication route (Requires Sanctum authentication middleware)
@@ -76,8 +75,23 @@ Route::prefix('prices')->group(function () {
     Route::delete('/{id}', [PriceController::class, 'destroy']);
 });
 
-
-
-
-
 Route::apiResource('stocks', StockController::class);
+
+
+use App\Http\Controllers\AuthController;
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/get-alluser', [AuthController::class, 'getAllUsers']);
+
+
+use App\Http\Controllers\AdminTypeController;
+
+// Admin Type Routes
+Route::prefix('admin-types')->group(function () {
+    Route::get('/', [AdminTypeController::class, 'index']); // Get all admin types
+    Route::post('/', [AdminTypeController::class, 'store']); // Create a new admin type
+    Route::get('/{id}', [AdminTypeController::class, 'show']); // Get a specific admin type
+    Route::put('/{id}', [AdminTypeController::class, 'update']); // Update an admin type
+    Route::delete('/{id}', [AdminTypeController::class, 'destroy']); // Delete an admin type
+});
