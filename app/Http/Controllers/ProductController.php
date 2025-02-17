@@ -39,7 +39,6 @@ class ProductController extends Controller
     }
 
     // Create a new product
-    // Create a new product
     public function store(Request $request)
     {
         try {
@@ -49,9 +48,8 @@ class ProductController extends Controller
                 'description' => 'nullable|string|max:1000',
                 'SKU' => 'required|string|max:100|unique:products,SKU',
                 'category' => 'required|integer',
-                'price_id' => 'nullable|integer',
                 'discount_id' => 'nullable|integer|exists:discounts,id',
-                'meta' => 'nullable|string',
+                'meta' => 'nullable|integer',
                 'status' => 'nullable|in:active,inactive',
             ]);
 
@@ -78,7 +76,6 @@ class ProductController extends Controller
                 'description' => trim($validated['description'] ?? ''),
                 'SKU' => trim($validated['SKU']),
                 'category_id' => $category->id, // Use the fetched category_id
-                'price_id' => $validated['price_id'] ?? null,
                 'discount_id' => $validated['discount_id'] ?? null,
                 'meta' => $validated['meta'] ?? null,
                 'status' => $validated['status'] ?? 'active',
@@ -99,7 +96,6 @@ class ProductController extends Controller
         }
     }
 
-
     // Update a product
     public function update(Request $request, $id)
     {
@@ -118,7 +114,6 @@ class ProductController extends Controller
                 'description' => 'nullable|string|max:1000',
                 'SKU' => 'sometimes|string|max:100|unique:products,SKU,' . $product->id,
                 'category_id' => 'required|integer|exists:categories,id',
-                'price_id' => 'nullable|integer|exists:prices,id',
                 'discount_id' => 'nullable|integer|exists:discounts,id',
                 'meta' => 'nullable|integer',
                 'status' => 'nullable|in:active,inactive',
@@ -129,7 +124,6 @@ class ProductController extends Controller
                 'description' => trim($validated['description'] ?? ''),
                 'SKU' => trim($validated['SKU'] ?? $product->SKU),
                 'category_id' => $validated['category_id'],
-                'price_id' => $validated['price_id'] ?? $product->price_id,
                 'discount_id' => $validated['discount_id'] ?? $product->discount_id,
                 'meta' => $validated['meta'] ?? $product->meta,
                 'status' => $validated['status'] ?? $product->status,
@@ -152,7 +146,6 @@ class ProductController extends Controller
     // Soft delete a product
     public function destroy($product_unique_id)
     {
-        // Ensure the ID is a valid UUID
         if (!\Illuminate\Support\Str::isUuid($product_unique_id)) {
             return response()->json([
                 'success' => false,
