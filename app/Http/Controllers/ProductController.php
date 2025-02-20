@@ -9,7 +9,6 @@ use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
-    // Get all products
     public function index()
     {
         $products = Product::where('is_deleted', false)->get();
@@ -20,7 +19,6 @@ class ProductController extends Controller
         ], 200);
     }
 
-    // Get a single product
     public function show($id)
     {
         $product = Product::where('product_id', $id)->where('is_deleted', false)->first();
@@ -38,11 +36,9 @@ class ProductController extends Controller
         ], 200);
     }
 
-    // Create a new product
     public function store(Request $request)
     {
         try {
-            // Validate incoming request
             $validated = $request->validate([
                 'product_name' => 'required|string|max:255',
                 'description' => 'nullable|string|max:1000',
@@ -53,14 +49,12 @@ class ProductController extends Controller
                 'status' => 'nullable|in:active,inactive',
             ]);
 
-            // Check if category is numeric (ID) or string (name)
             $category = null;
             if (is_numeric($validated['category'])) {
                 // If it's numeric, fetch the category by ID
                 $category = \App\Models\ProductCategory::find($validated['category']);
             }
 
-            // If the category is not found, return an error response
             if (!$category) {
                 return response()->json([
                     'success' => false,
@@ -69,7 +63,6 @@ class ProductController extends Controller
                 ], 404);
             }
 
-            // Create the new product
             $product = Product::create([
                 'product_id' => Str::uuid(),
                 'product_name' => trim($validated['product_name']),
@@ -81,7 +74,6 @@ class ProductController extends Controller
                 'status' => $validated['status'] ?? 'active',
             ]);
 
-            // Return success response
             return response()->json([
                 'success' => true,
                 'message' => 'Product created successfully',
@@ -96,7 +88,6 @@ class ProductController extends Controller
         }
     }
 
-    // Update a product
     public function update(Request $request, $id)
     {
         $product = Product::where('product_id', $id)->where('is_deleted', false)->first();

@@ -19,7 +19,9 @@ class AdminUser extends Authenticatable
         'last_name',
         'type_id',
         'status',
+        'image'
     ];
+ 
 
     public function adminType()
     {

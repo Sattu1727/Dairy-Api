@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductImageController;
 
 // User authentication route (Requires Sanctum authentication middleware)
 Route::get('/user', function (Request $request) {
@@ -83,6 +84,8 @@ use App\Http\Controllers\AuthController;
 
 Route::prefix('admin-register')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
+    Route::put('/update-admin-user/{username}', [AuthController::class, 'updateadminuser']);
+    Route::put('/update-user-status/{username}', [AuthController::class, 'updateStatus']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/get-alluser', [AuthController::class, 'getAllUsers']);
 });
@@ -106,4 +109,14 @@ Route::prefix('user-register')->group(function () {
     Route::post('/update/{id}', [UserController::class, 'update']);
     Route::get('/get/{id}', [UserController::class, 'getUserById']);
     Route::get('/get', [UserController::class, 'getAllUsers']);
+});
+
+
+
+
+Route::prefix('product-image')->group(function () {
+    Route::post('/add-images', [ProductImageController::class, 'store']);
+    Route::get('/get-images', [ProductImageController::class, 'index']);
+    Route::delete('/add-images/{id}', [ProductImageController::class, 'destroy']);
+    Route::get('/{product_unique_id}', [ProductImageController::class, 'show']);
 });
